@@ -20,7 +20,7 @@ class Article {
     }
 
     static create(data, cb) {
-        const sql = 'INSERT INFO articles(title, content) VALUES (?, ?)';
+        const sql = 'INSERT INTO articles(title, content) VALUES (?, ?)';
         db.run(sql, data.title, data.content, cb);
     }
 
@@ -29,6 +29,10 @@ class Article {
             return cb(new Error('please provide an id'));
         }
         db.run('DELETE FROM articles WHERE id = ?', id, cb);
+    }
+
+    static clear(cb) {
+        db.run('DELETE FROM articles', cb);
     }
 }
 
