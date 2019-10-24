@@ -13,7 +13,7 @@ function updateSourceData(cb) {
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
-                            cb();
+                            cb && cb();
                         }
                     } else {
                         console.log(err);
@@ -24,7 +24,9 @@ function updateSourceData(cb) {
     });
 }
 
-module.exports.start = (app) => {
+module.exports.polling = hour => global.setInterval(updateSourceData, hour * 3600000);
+
+module.exports.start = app => {
 
     app.get('/', (req, res, next) => {
         fs.readFile('./views/index.html', (e, d) => {
@@ -60,6 +62,7 @@ module.exports.start = (app) => {
                 return next(err);
             }
             const list = articles.map(item => item.content).join('\n');
+            console.log('v2ray list update: \n' + list);
             res.send(base64.encode(list));
         });
     });

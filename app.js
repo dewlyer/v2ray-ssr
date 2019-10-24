@@ -6,6 +6,8 @@ const app = express();
 const port = process.env.PROT || 3000;
 
 routes.start(app);
+routes.polling(1);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('port', port);
