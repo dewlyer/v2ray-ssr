@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const base64 = require('js-base64').Base64;
 const fs = require('fs');
 const app = express();
 const port = process.env.PROT || 3000;
@@ -27,7 +28,6 @@ app.get('/articles', (req, res, next) => {
         if (err) {
             return next(err);
         }
-        console.log(articles);
         res.format({
             html: () => {
                 res.render('articles.ejs', {articles: articles});
@@ -36,6 +36,16 @@ app.get('/articles', (req, res, next) => {
                 res.send(articles);
             }
         })
+    });
+});
+
+app.get('/v2ray', (req, res, next) => {
+    Articles.all((err, articles) => {
+        if (err) {
+            return next(err);
+        }
+        const list = articles.map(item => item.content).join('\n');
+        res.send(Base64.encode(list));
     });
 });
 
