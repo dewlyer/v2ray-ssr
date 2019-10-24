@@ -13,6 +13,7 @@ function updateSourceData(cb) {
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
+                            console.log('v2ray source sync success: ' + new Date().toLocaleString());
                             cb && cb();
                         }
                     } else {
