@@ -3,6 +3,27 @@ const fs = require('fs');
 const Articles = require('../models/db').Article;
 const crawler = require('../libs/crawler');
 
+function updateSourceData(cb) {
+    crawler.getData(data => {
+        Articles.clear(() => {
+            data.forEach((item, index) => {
+                Articles.create({
+                    title: index,
+                    content: item
+                }, (err) => {
+                    if (!err) {
+                        if (index === data.length - 1) {
+                            cb();
+                        }
+                    } else {
+                        console.log(err);
+                    }
+                });
+            });
+        });
+    });
+}
+
 module.exports.start = (app) => {
 
     app.get('/', (req, res, next) => {
@@ -54,23 +75,8 @@ module.exports.start = (app) => {
     });
 
     app.post('/update', (req, res, next) => {
-        crawler.getData(data => {
-            Articles.clear(() => {
-                data.forEach((item, index) => {
-                    Articles.create({
-                        title: index,
-                        content: item
-                    }, (err) => {
-                        if (!err) {
-                            if (index === data.length - 1) {
-                                res.send('OK');
-                            }
-                        } else {
-                            console.log(err);
-                        }
-                    });
-                });
-            });
+        updateSourceData(() => {
+            res.send('OK');
         });
     });
 
