@@ -1,16 +1,16 @@
 const base64 = require('js-base64').Base64;
 const fs = require('fs');
-const Articles = require('../models/db').Article;
+const Servers = require('../models/db').Server;
 const crawler = require('../libs/crawler');
 
 function updateSourceData(cb) {
     console.log('source sync start ==>');
     crawler.getData(data => {
-        Articles.clear(() => {
-            data.forEach((item, index) => {
-                Articles.create({
-                    title: index,
-                    content: item
+        Servers.clear(() => {
+            data.forEach((url, index) => {
+                Servers.create({
+                    name: index,
+                    url: url
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
@@ -35,27 +35,27 @@ module.exports.start = app => {
     });
 
     app.get('/articles', (req, res, next) => {
-        Articles.all((err, articles) => {
+        Servers.all((err, servers) => {
             if (err) {
                 return next(err);
             }
             res.format({
                 html: () => {
-                    res.render('articles.ejs', {articles: articles});
+                    res.render('list.ejs', {servers: servers});
                 },
                 json: () => {
-                    res.send(articles);
+                    res.send(servers);
                 }
             })
         });
     });
 
     app.get('/v2ray', (req, res, next) => {
-        Articles.all((err, articles) => {
+        Servers.all((err, servers) => {
             if (err) {
                 return next(err);
             }
-            const list = articles.map(item => item.content).join('\n');
+            const list = servers.map(item => item.url).join('\n');
             console.log('v2ray list updated ' + list.length + ' servers');
             res.send(base64.encode(list));
         });
@@ -63,11 +63,11 @@ module.exports.start = app => {
 
     app.get('/articles/:id', (req, res, next) => {
         const id = req.params.id;
-        Articles.find(id, (err, article) => {
+        Servers.find(id, (err, server) => {
             if (err) {
                 return next(err);
             }
-            res.send(article);
+            res.send(server);
         });
     });
 
@@ -79,7 +79,7 @@ module.exports.start = app => {
 
     app.delete('/articles/:id', (req, res, next) => {
         const id = req.params.id;
-        Articles.delete(id, err => {
+        Servers.delete(id, err => {
             if (err) {
                 return next(err);
             }

@@ -1,0 +1,7 @@
+<% include head %>
+<ul>
+    <% articles.forEach((server) => { %>
+        <li><a href="<%= server.url %>"> <%= server.url %> </a></li>
+    <% }) %>
+</ul>
+<% include foot %>
