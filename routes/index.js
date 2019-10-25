@@ -4,7 +4,7 @@ const Articles = require('../models/db').Article;
 const crawler = require('../libs/crawler');
 
 function updateSourceData(cb) {
-    console.log('source sync start');
+    console.log('source sync start ==>');
     crawler.getData(data => {
         Articles.clear(() => {
             data.forEach((item, index) => {
@@ -31,15 +31,7 @@ module.exports.polling = minutes => global.setInterval(updateSourceData, minutes
 module.exports.start = app => {
 
     app.get('/', (req, res, next) => {
-        fs.readFile('./views/index.html', (e, d) => {
-            if (e) {
-                console.error(e);
-                res.end('Server Error');
-            } else {
-                const tmpl = d.toString();
-                res.end(tmpl);
-            }
-        });
+        res.render('index.ejs');
     });
 
     app.get('/articles', (req, res, next) => {

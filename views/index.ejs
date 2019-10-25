@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>V2Ray RSS</title>
-    <link rel="stylesheet" href="/libs/bootstrap/css/bootstrap.css">
-</head>
-<body>
+<% include head %>
 <div class="container">
     <form>
         <div class="form-group row">
@@ -41,7 +34,6 @@
         </div>
     </div>
 </script>
-<script src="/libs/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(() => {
         $('#syncStartBtn').on('click', event => {
@@ -51,8 +43,8 @@
             }).catch(err => {
                 window.alert(err);
             });
+            return false;
         });
     });
 </script>
-</body>
-</html>
+<% include foot %>
