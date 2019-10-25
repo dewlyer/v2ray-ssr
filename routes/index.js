@@ -34,7 +34,7 @@ module.exports.start = app => {
         res.render('index.ejs');
     });
 
-    app.get('/articles', (req, res, next) => {
+    app.get('/servers', (req, res, next) => {
         Servers.all((err, servers) => {
             if (err) {
                 return next(err);
@@ -50,7 +50,17 @@ module.exports.start = app => {
         });
     });
 
-    app.get('/v2ray', (req, res, next) => {
+    app.get('/servers/:id', (req, res, next) => {
+        const id = req.params.id;
+        Servers.find(id, (err, server) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(server);
+        });
+    });
+
+    app.get('/servers/v2ray', (req, res, next) => {
         Servers.all((err, servers) => {
             if (err) {
                 return next(err);
@@ -61,23 +71,13 @@ module.exports.start = app => {
         });
     });
 
-    app.get('/articles/:id', (req, res, next) => {
-        const id = req.params.id;
-        Servers.find(id, (err, server) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(server);
-        });
-    });
-
-    app.post('/update', (req, res, next) => {
+    app.post('/servers/sync', (req, res, next) => {
         updateSourceData(() => {
             res.send('OK');
         });
     });
 
-    app.delete('/articles/:id', (req, res, next) => {
+    app.delete('/servers/:id', (req, res, next) => {
         const id = req.params.id;
         Servers.delete(id, err => {
             if (err) {
