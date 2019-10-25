@@ -14,11 +14,15 @@ module.exports.getData = (cb) => {
             html += chunk;
         });
         res.on('end', () => {
+            let result = [];
             const $ = cheerio.load(html);
-            const links = Array.prototype.map.call($('[data-clipboard-text^="vmess://"]'), item => {
-                return $(item).data('clipboard-text').replace('\n', '');
+            $('[data-clipboard-text^="vmess://"]').each((index, item) => {
+                const $item = $(item);
+                const name = $item.attr('id');
+                const url = $item.data('clipboard-text').replace('\n', '');
+                result.push({name, url});
             });
-            cb(links);
+            cb(result);
         })
     }).on('error', err => console.log(err));
 };

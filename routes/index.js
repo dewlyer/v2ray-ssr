@@ -7,11 +7,8 @@ function updateSourceData(cb) {
     console.log('source sync begin ==> ' + new Date().toLocaleString());
     crawler.getData(data => {
         Servers.clear(() => {
-            data.forEach((url, index) => {
-                Servers.create({
-                    name: index,
-                    url: url
-                }, (err) => {
+            data.forEach((item, index) => {
+                Servers.create(item, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
                             console.log('source sync end ==> ' + new Date().toLocaleString());

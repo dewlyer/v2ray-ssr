@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('port', port);
 app.listen(app.get('port'), () => {
-    console.log(`Express web app available at http://localhost:${app.get('port')}/ timestamp: ${new Date().toLocaleString()}`);
+    console.log(`Express web app available at http://localhost:${app.get('port')}/ ==> ${new Date().toLocaleString()}`);
 });
 
 module.exports = app;

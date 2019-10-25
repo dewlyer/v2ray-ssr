@@ -1,9 +1,11 @@
-<% include head %>
+<% include head.ejs %>
 
-<ul class="server-list">
-    <% servers.forEach((server) => { %>
-        <li><a href="<%= server.url %>"> <%= server.url %> </a></li>
-    <% }) %>
-</ul>
+<div class="container">
+    <ul class="server-list">
+        <% servers.forEach((server) => { %>
+            <li><a href="<%= server.url %>" title="<%= server.name %>"> <%= server.url %> </a></li>
+        <% }) %>
+    </ul>
+</div>
 
-<% include foot %>
+<% include foot.ejs %>
