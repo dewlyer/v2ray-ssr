@@ -56,7 +56,7 @@ module.exports.start = app => {
                 return next(err);
             }
             const list = articles.map(item => item.content).join('\n');
-            console.log('v2ray list update: \n' + list);
+            console.log('v2ray list updated ' + list.length + ' servers');
             res.send(base64.encode(list));
         });
     });
