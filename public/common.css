@@ -1,0 +1,22 @@
+.server-list {
+    margin: 0;
+    padding: 15px;
+    list-style: none;
+    width: 800px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.server-list li {
+    padding: 10px;
+    border-bottom: 1px dashed #ccc;
+}
+
+.server-list li:last-child {
+    border-bottom: none;
+}
+
+.server-list a {
+    color: #444;
+    text-decoration: none;
+}

@@ -8,7 +8,8 @@ const port = process.env.PROT || 3000;
 routes.start(app);
 routes.polling(60);
 
-app.use('/favicon.ico', express.static('favicon.ico'));
+app.use('/asset', express.static('public'));
+app.use('/favicon.ico', express.static('public/favicon.ico'));
 app.use('/libs/jquery', express.static('node_modules/jquery/dist'));
 app.use('/libs/bootstrap', express.static('node_modules/bootstrap/dist'));
 app.use(bodyParser.json());

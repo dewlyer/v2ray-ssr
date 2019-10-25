@@ -1,7 +1,9 @@
 <% include head %>
-<ul>
+
+<ul class="server-list">
     <% servers.forEach((server) => { %>
         <li><a href="<%= server.url %>"> <%= server.url %> </a></li>
     <% }) %>
 </ul>
+
 <% include foot %>
