@@ -4,6 +4,7 @@ const Articles = require('../models/db').Article;
 const crawler = require('../libs/crawler');
 
 function updateSourceData(cb) {
+    console.log('source sync start');
     crawler.getData(data => {
         Articles.clear(() => {
             data.forEach((item, index) => {
@@ -13,7 +14,7 @@ function updateSourceData(cb) {
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
-                            console.log('v2ray source sync success: ' + new Date().toLocaleString());
+                            console.log('source sync success at ' + new Date().toLocaleString());
                             cb && cb();
                         }
                     } else {
@@ -25,7 +26,7 @@ function updateSourceData(cb) {
     });
 }
 
-module.exports.polling = hour => global.setInterval(updateSourceData, hour * 3600000);
+module.exports.polling = minutes => global.setInterval(updateSourceData, minutes * 60000);
 
 module.exports.start = app => {
 
