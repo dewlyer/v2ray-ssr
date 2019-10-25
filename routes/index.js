@@ -4,7 +4,7 @@ const Servers = require('../models/db').Server;
 const crawler = require('../libs/crawler');
 
 function updateSourceData(cb) {
-    console.log('source sync start ==>');
+    console.log('source sync start ==>' + new Date().toLocaleString());
     crawler.getData(data => {
         Servers.clear(() => {
             data.forEach((url, index) => {
@@ -14,7 +14,7 @@ function updateSourceData(cb) {
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
-                            console.log('source sync success at ' + new Date().toLocaleString());
+                            console.log('source sync success ==> ' + new Date().toLocaleString());
                             cb && cb();
                         }
                     } else {
@@ -34,6 +34,16 @@ module.exports.start = app => {
         res.render('index.ejs');
     });
 
+    app.get('/server/:id', (req, res, next) => {
+        const id = req.params.id;
+        Servers.find(id, (err, server) => {
+            if (err) {
+                return next(err);
+            }
+            res.send(server);
+        });
+    });
+
     app.get('/servers', (req, res, next) => {
         Servers.all((err, servers) => {
             if (err) {
@@ -50,23 +60,13 @@ module.exports.start = app => {
         });
     });
 
-    app.get('/servers/:id', (req, res, next) => {
-        const id = req.params.id;
-        Servers.find(id, (err, server) => {
-            if (err) {
-                return next(err);
-            }
-            res.send(server);
-        });
-    });
-
-    app.get('/servers/v2ray', (req, res, next) => {
+    app.get('/servers/rss', (req, res, next) => {
         Servers.all((err, servers) => {
             if (err) {
                 return next(err);
             }
             const list = servers.map(item => item.url).join('\n');
-            console.log('v2ray list updated ' + list.length + ' servers');
+            console.log('rss updated ==> add ' + servers.length + ' servers');
             res.send(base64.encode(list));
         });
     });
