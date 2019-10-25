@@ -4,7 +4,7 @@ const Servers = require('../models/db').Server;
 const crawler = require('../libs/crawler');
 
 function updateSourceData(cb) {
-    console.log('source sync start ==>' + new Date().toLocaleString());
+    console.log('source sync begin ==> ' + new Date().toLocaleString());
     crawler.getData(data => {
         Servers.clear(() => {
             data.forEach((url, index) => {
@@ -14,7 +14,7 @@ function updateSourceData(cb) {
                 }, (err) => {
                     if (!err) {
                         if (index === data.length - 1) {
-                            console.log('source sync success ==> ' + new Date().toLocaleString());
+                            console.log('source sync end ==> ' + new Date().toLocaleString());
                             cb && cb();
                         }
                     } else {
@@ -66,7 +66,7 @@ module.exports.start = app => {
                 return next(err);
             }
             const list = servers.map(item => item.url).join('\n');
-            console.log('rss updated ==> add ' + servers.length + ' servers');
+            console.log('source updated result ==> add ' + servers.length + ' servers');
             res.send(base64.encode(list));
         });
     });
