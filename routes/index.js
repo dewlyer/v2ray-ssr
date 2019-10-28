@@ -1,5 +1,6 @@
-const base64 = require('js-base64').Base64;
 const fs = require('fs');
+const router = require('express').Router();
+const base64 = require('js-base64').Base64;
 const Servers = require('../models/db').Server;
 const crawler = require('../libs/crawler');
 
@@ -23,65 +24,67 @@ function updateSourceData(cb) {
     });
 }
 
-module.exports.polling = minutes => global.setInterval(updateSourceData, minutes * 60000);
 
-module.exports.start = app => {
+router.get('/', (req, res, next) => {
+    res.render('index', { title: 'Express'});
+});
 
-    app.get('/', (req, res, next) => {
-        res.render('index.ejs');
+router.get('/server/:id', (req, res, next) => {
+    const id = req.params.id;
+    Servers.find(id, (err, server) => {
+        if (err) {
+            return next(err);
+        }
+        res.send(server);
     });
+});
 
-    app.get('/server/:id', (req, res, next) => {
-        const id = req.params.id;
-        Servers.find(id, (err, server) => {
-            if (err) {
-                return next(err);
+router.get('/servers', (req, res, next) => {
+    Servers.all((err, servers) => {
+        if (err) {
+            return next(err);
+        }
+        res.format({
+            html: () => {
+                res.render('list.ejs', {servers: servers});
+            },
+            json: () => {
+                res.send(servers);
             }
-            res.send(server);
-        });
-    });
-
-    app.get('/servers', (req, res, next) => {
-        Servers.all((err, servers) => {
-            if (err) {
-                return next(err);
-            }
-            res.format({
-                html: () => {
-                    res.render('list.ejs', {servers: servers});
-                },
-                json: () => {
-                    res.send(servers);
-                }
-            })
-        });
-    });
-
-    app.get('/servers/rss', (req, res, next) => {
-        Servers.all((err, servers) => {
-            if (err) {
-                return next(err);
-            }
-            const list = servers.map(item => item.url).join('\n');
-            console.log('source updated result ==> add ' + servers.length + ' servers');
-            res.send(base64.encode(list));
-        });
-    });
-
-    app.post('/servers/sync', (req, res, next) => {
-        updateSourceData(() => {
-            res.send('OK');
-        });
-    });
-
-    app.delete('/servers/:id', (req, res, next) => {
-        const id = req.params.id;
-        Servers.delete(id, err => {
-            if (err) {
-                return next(err);
-            }
-            res.send({message: 'Deleted'});
         })
     });
+});
 
+router.get('/servers/rss', (req, res, next) => {
+    Servers.all((err, servers) => {
+        if (err) {
+            return next(err);
+        }
+        const list = servers.map(item => item.url).join('\n');
+        console.log('source updated result ==> add ' + servers.length + ' servers');
+        res.send(base64.encode(list));
+    });
+});
+
+router.post('/servers/sync', (req, res, next) => {
+    updateSourceData(() => {
+        res.send('OK');
+    });
+});
+
+router.delete('/servers/:id', (req, res, next) => {
+    const id = req.params.id;
+    Servers.delete(id, err => {
+        if (err) {
+            return next(err);
+        }
+        res.send({message: 'Deleted'});
+    })
+});
+
+module.exports = router;
+
+module.exports.polling = minutes => (req, res, next) => {
+    global.setInterval(updateSourceData, minutes * 60000);
+    next();
 };
