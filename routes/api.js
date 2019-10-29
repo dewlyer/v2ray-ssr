@@ -1,12 +1,10 @@
-const fs = require('fs');
 const router = require('express').Router();
 const base64 = require('js-base64').Base64;
 const Servers = require('../models/db').Server;
-const crawler = require('../libs/crawler');
+const Services = require('../libs/services');
 
 function updateSourceData(cb) {
-    console.log('source sync begin ==> ' + new Date().toLocaleString());
-    crawler.getData(data => {
+    Services.updateSourceData(data => {
         Servers.clear(() => {
             data.forEach((item, index) => {
                 Servers.create(item, (err) => {
@@ -51,9 +49,7 @@ router.get('/server/:id', (req, res, next) => {
     });
 });
 router.post('/servers/sync', (req, res, next) => {
-    updateSourceData(() => {
-        res.send('OK');
-    });
+    updateSourceData(() => res.send('OK'));
 });
 router.delete('/servers/:id', (req, res, next) => {
     const id = req.params.id;
@@ -66,3 +62,9 @@ router.delete('/servers/:id', (req, res, next) => {
 });
 
 module.exports = router;
+
+module.exports.polling = minutes => (req, res, next) => {
+    global.setInterval(updateSourceData, minutes * 60000);
+    next();
+};
+

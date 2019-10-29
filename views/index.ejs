@@ -1,6 +1,8 @@
 <% include head.ejs %>
 
 <div class="container">
+    <ul class="server-list"></ul>
+    <p class="server-rss"></p>
     <div class="card">
         <h5 class="card-header">Featured</h5>
         <div class="card-body">
@@ -19,7 +21,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button type="submit" class="btn btn-primary" id="syncStartBtn" data-src="/servers/sync">同步V2RAY</button>
+                        <button type="submit" class="btn btn-primary" id="syncStartBtn" data-src="/api/servers/sync">同步V2RAY</button>
                     </div>
                 </div>
             </form>
@@ -42,6 +44,20 @@
 </script>
 <script>
     $(document).ready(() => {
+
+        $.get('/api/servers/list').then(data => {
+            const html = $.map(data, server => `<li><a href="${ server.url }" title="${ server.name }"> ${ server.url } </a></li>`).join('');
+            $('.server-list').html(html);
+        }).catch(err => {
+            window.alert(err);
+        });
+
+        $.get('/api/servers/rss').then(data => {
+            $('.server-rss').html(data);
+        }).catch(err => {
+            window.alert(err);
+        });
+
         $('#syncStartBtn').on('click', event => {
             const $target = $(event.target);
             $.post($target.data('src')).then(data => {
@@ -51,6 +67,7 @@
             });
             return false;
         });
+
     });
 </script>
 

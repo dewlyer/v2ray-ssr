@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 
 const router = require('./routes');
-const polling = router.polling;
+const api = require('./routes/api');
+const polling = api.polling;
 const app = express();
 const port = process.env.PROT || 3000;
 
@@ -19,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs/jquery', express.static('node_modules/jquery/dist'));
 app.use('/libs/bootstrap', express.static('node_modules/bootstrap/dist'));
 app.use('/', router);
+app.use('/api', api);
 app.use(polling(60));
 
 app.listen(app.get('port'), () => {
