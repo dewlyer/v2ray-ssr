@@ -19,3 +19,8 @@
     color: #444;
     text-decoration: none;
 }
+
+.server-rss {
+    word-wrap: break-word;
+    word-break: break-all;
+}
