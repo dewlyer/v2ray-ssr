@@ -63,8 +63,8 @@ router.delete('/servers/:id', (req, res, next) => {
 
 module.exports = router;
 
-module.exports.polling = minutes => (req, res, next) => {
-    global.setInterval(updateSourceData, minutes * 60000);
-    next();
-};
+// module.exports.polling = minutes => (req, res, next) => {
+//     global.setInterval(updateSourceData, minutes * 60000);
+//     next();
+// };
 
