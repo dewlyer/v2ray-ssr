@@ -22,6 +22,17 @@ function updateSourceData(cb) {
     });
 }
 
+function getSourceRss(cb, error) {
+    Servers.all((err, servers) => {
+        if (err) {
+            return error(err);
+        }
+        const list = servers.map(item => item.url).join('\n');
+        console.log('source updated result ==> add ' + servers.length + ' servers');
+        cb(list);
+    });
+}
+
 router.get('/servers/list', (req, res, next) => {
     Servers.all((err, servers) => {
         if (err) {
@@ -31,13 +42,10 @@ router.get('/servers/list', (req, res, next) => {
     });
 });
 router.get('/servers/rss', (req, res, next) => {
-    Servers.all((err, servers) => {
-        if (err) {
-            return next(err);
-        }
-        const list = servers.map(item => item.url).join('\n');
-        console.log('source updated result ==> add ' + servers.length + ' servers');
+    getSourceRss(list => {
         res.send(base64.encode(list));
+    }, err => {
+        next(err)
     });
 });
 router.get('/server/:id', (req, res, next) => {
