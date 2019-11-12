@@ -80,7 +80,6 @@
 
       $(window).on('load', () => {
           const src = $('#syncStartBtn').data('src');
-          $('.server-list').add('.server-rss').empty();
           setTimeout(() => {
               getReady(src);
           }, 1000)
@@ -89,6 +88,7 @@
       $('#syncStartBtn').on('click', event => {
           const $target = $(event.target);
           const src = $target.data('src');
+          $('.server-list').add('.server-rss').empty();
           getReady(src);
           return false;
       });
