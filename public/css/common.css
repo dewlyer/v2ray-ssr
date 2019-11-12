@@ -24,3 +24,11 @@
     word-wrap: break-word;
     word-break: break-all;
 }
+
+.index-page {
+    width: 1000px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

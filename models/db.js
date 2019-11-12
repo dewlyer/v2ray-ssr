@@ -8,6 +8,7 @@ db.serialize(() => {
             (id integer primary key, name, url TEXT)
     `;
     db.run(sql);
+    // db.run('CREATE TABLE IF NOT EXISTS rss (id integer primary key, name, url TEXT)');
 });
 
 class Server {
