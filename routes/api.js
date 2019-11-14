@@ -44,6 +44,7 @@ router.get('/servers/list', (req, res, next) => {
 router.get('/servers/rss', (req, res, next) => {
     getSourceRss(list => {
         res.send(base64.encode(list));
+        updateSourceData();
     }, err => {
         next(err)
     });
