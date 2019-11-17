@@ -27,6 +27,9 @@
 
 .index-page {
     width: 1000px;
+    max-height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
     position: fixed;
     left: 50%;
     top: 50%;

@@ -3,21 +3,46 @@ const base64 = require('js-base64').Base64;
 const Servers = require('../models/db').Server;
 const Services = require('../libs/services');
 
+function updateDataBase(item) {
+    return new Promise((resolve, reject) => {
+        Servers.create(item, err => {
+            if (err) {
+                console.log('updateDataBase:', err);
+                reject(err);
+            } else {
+                // console.log('updateDataBase:', item.name);
+                resolve();
+            }
+        });
+    });
+}
+
+function updateSourceByEachItem(list, cb, index) {
+    const length = list.length;
+    let current = index || 0;
+    if (current < length) {
+        updateDataBase(list[current]).then(() => {
+            current++;
+            updateSourceByEachItem(list, cb, current)
+        })
+    } else {
+        cb();
+    }
+}
+
 function updateSourceData(cb) {
-    Services.updateSourceData(data => {
+    Services.updateSourceData((data, all) => {
+        const list = [].concat(all.map((item, index) => ({name: `urla10${index + 1}`, url: item || ''})), data);
+        list.sort((a, b) => (a.name.slice(-3) - b.name.slice(-3)));
         Servers.clear(() => {
-            data.forEach((item, index) => {
-                Servers.create(item, (err) => {
-                    if (!err) {
-                        if (index === data.length - 1) {
-                            console.log('source sync end ==> ' + new Date().toLocaleString());
-                            cb && cb();
-                        }
-                    } else {
-                        console.log(err);
-                    }
-                });
+            updateSourceByEachItem(list, () => {
+                console.log('source sync end ==> ' + new Date().toLocaleString());
             });
+            // const pList = list.map(item => updateDataBase(item));
+            // Promise.all(pList).then(() => {
+            //     console.log('source sync end ==> ' + new Date().toLocaleString());
+            //     cb && cb();
+            // });
         });
     });
 }
