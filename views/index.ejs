@@ -79,10 +79,12 @@
   $(document).ready(() => {
 
       $(window).on('load', () => {
-          const src = $('#syncStartBtn').data('src');
-          setTimeout(() => {
-              getReady(src);
-          }, 1000)
+          // const src = $('#syncStartBtn').data('src');
+          // setTimeout(() => {
+          //     getReady(src);
+          // }, 1000)
+          getServerList();
+          getServerRss();
       })
 
       $('#syncStartBtn').on('click', event => {

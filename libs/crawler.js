@@ -12,16 +12,15 @@ function parseQrCode(image) {
     return new Promise((resolve, reject) => {
         let qr = new QrCode();
         qr.callback = (err, value) => {
-            if (err) {
-                console.error('parseQrCode:', image, err);
-                resolve('false');
-                return;
-            }
-
-            if (value && value.result) {
-                resolve(value.result);
+            if (!err) {
+                if (value && value.result) {
+                    resolve(value.result);
+                } else {
+                    console.error('parseQrCode:', value);
+                    resolve('empty');
+                }
             } else {
-                console.error('parseQrCode:', value);
+                console.error('parseQrCode:', image, err);
                 resolve('false');
             }
         };
