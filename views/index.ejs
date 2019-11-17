@@ -1,6 +1,6 @@
 <% include head.ejs %>
 
-<div class="container index-page">
+<div class="index-page">
     <div class="card">
         <h5 class="card-header">
             <%= title %>
@@ -51,7 +51,7 @@
 <script>
   function getServerList() {
     $.get('/api/servers/list').then(data => {
-      const html = $.map(data, server => `<li><a href="${server.url}" title="${server.name}"> ${server.url} </a></li>`).join('');
+      const html = $.map(data, server => `<li><span>${server.name.toUpperCase()}</span>: <br><a href="${server.url}" title="${server.name}"> ${server.url} </a></li>`).join('');
       $('.server-list').html(html);
     }).catch(err => {
       window.alert(err);
