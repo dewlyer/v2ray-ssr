@@ -37,7 +37,9 @@ function updateSourceData(cb) {
         Servers.clear(() => {
             updateSourceByEachItem(list, () => {
                 console.log('source sync end ==> ' + new Date().toLocaleString());
-                cb();
+                if(typeof cb === 'function') {
+                    cb();
+                }
             });
             // const pList = list.map(item => updateDataBase(item));
             // Promise.all(pList).then(() => {
