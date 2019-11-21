@@ -2,7 +2,7 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
-
+// https://tutut.ml/tool/free_ssr
 const targetList = [
     {
         url: 'https://get.ishadowx.biz/',
