@@ -2,11 +2,36 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
-const target = {
-    hostname: 'get.ishadowx.biz',
-    path: '',
-    port: 443
-};
+
+const targetList = [
+    {
+        url: 'https://get.ishadowx.biz/',
+        rule: '.hover-text a[data-lightbox-gallery]',
+        target:  {
+            hostname: 'get.ishadowx.biz',
+            path: '',
+            port: 443
+        }
+    },
+    {
+        url: 'https://en.ss8.tech/',
+        rule: '.carousel a.image',
+        target:  {
+            hostname: 'en.ss8.tech',
+            path: '',
+            port: 443
+        }
+    },
+    {
+        url: 'https://my.freess.info/',
+        rule: '.carousel a.image',
+        target:  {
+            hostname: 'en.ss8.tech',
+            path: '',
+            port: 443
+        }
+    },
+];
 
 function parseQrCode(image) {
     return new Promise((resolve, reject) => {
@@ -30,7 +55,7 @@ function parseQrCode(image) {
 
 function readImageQrCode(url) {
     // {...target, path: '/' + url}
-    return Jimp.read('https://get.ishadowx.biz' + '/' + url).then(image => {
+    return Jimp.read(url).then(image => {
         return parseQrCode(image)
     }).catch(err => {
         if (err) {
@@ -62,29 +87,49 @@ function getImages(urls) {
 }
 
 module.exports.getData = (cb) => {
-    https.get(target, res => {
-        let html = '';
-        res.setEncoding('utf-8');
-        res.on('data', chunk => {
-            html += chunk;
+    let promiseList = [];
+    targetList.forEach(item => {
+        const promise = new Promise((resolve, reject) => {
+            https.get(item.target, res => {
+                let html = '';
+                res.setEncoding('utf-8');
+                res.on('data', chunk => {
+                    html += chunk;
+                });
+                res.on('end', () => {
+                    let result = [];
+                    let images = [];
+                    const $ = cheerio.load(html);
+
+                    // $('[data-clipboard-text^="vmess://"]').each((index, item) => {
+                    //     const $item = $(item);
+                    //     const name = $item.attr('id');
+                    //     const url = $item.data('clipboard-text').replace('\n', '');
+                    //     result.push({name, url});
+                    // });
+
+                    // if (result.length) {
+                    //     promiseList.push(Promise.resolve(result))
+                    // }
+
+                    $(item.rule).each((index, image) => {
+                        let src = $(image).attr('href');
+                        if (src.indexOf('http') === -1) {
+                            src = item.url + src
+                            console.log(src)
+                        }
+                        images.push(src);
+                    });
+
+                    resolve(getImages(images))
+                })
+            }).on('error', err => console.log(err));
         });
-        res.on('end', () => {
-            let result = [];
-            let images = [];
-            const $ = cheerio.load(html);
-            $('[data-clipboard-text^="vmess://"]').each((index, item) => {
-                const $item = $(item);
-                const name = $item.attr('id');
-                const url = $item.data('clipboard-text').replace('\n', '');
-                result.push({name, url});
-            });
-            $('.hover-text a[data-lightbox-gallery]').each((index, item) => {
-                const src = $(item).attr('href');
-                images.push(src)
-            });
-            getImages(images).then(data => {
-                cb(result, data);
-            });
-        })
-    }).on('error', err => console.log(err));
+        promiseList.push(promise)
+    });
+
+    Promise.all(promiseList).then(data => {
+        cb(data);
+    });
+
 };

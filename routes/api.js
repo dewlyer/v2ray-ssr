@@ -31,8 +31,18 @@ function updateSourceByEachItem(list, cb, index) {
 }
 
 function updateSourceData(cb) {
-    Services.updateSourceData((data, all) => {
-        const list = [].concat(all.map((item, index) => ({name: `urla10${index + 1}`, url: item || ''})), data);
+    Services.updateSourceData((all) => {
+        let list = [];
+        all.forEach(item => {
+            list = list.concat(item);
+        });
+        list = list.map((item, index) => {
+            console.log(item);
+            return {
+                name: `urla10${index + 1}`,
+                url: item || ''
+            }
+        });
         list.sort((a, b) => (a.name.slice(-3) - b.name.slice(-3)));
         Servers.clear(() => {
             updateSourceByEachItem(list, () => {
@@ -72,7 +82,7 @@ router.get('/servers/list', (req, res, next) => {
 router.get('/servers/rss', (req, res, next) => {
     getSourceRss(list => {
         res.send(base64.encode(list));
-        updateSourceData();
+        // updateSourceData();
     }, err => {
         next(err)
     });
