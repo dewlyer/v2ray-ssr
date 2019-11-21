@@ -21,16 +21,7 @@ const targetList = [
             path: '',
             port: 443
         }
-    },
-    {
-        url: 'https://my.freess.info/',
-        rule: '.carousel a.image',
-        target:  {
-            hostname: 'en.ss8.tech',
-            path: '',
-            port: 443
-        }
-    },
+    }
 ];
 
 function parseQrCode(image) {
