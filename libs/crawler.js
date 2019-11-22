@@ -2,7 +2,7 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
-// https://tutut.ml/tool/free_ssr
+
 const targetList = [
     {
         url: 'https://get.ishadowx.biz/',
@@ -54,7 +54,6 @@ function parseQrCode(image) {
 }
 
 function readImageQrCode(url) {
-    // {...target, path: '/' + url}
     return Jimp.read(url).then(image => {
         return parseQrCode(image)
     }).catch(err => {
@@ -69,19 +68,6 @@ function getImages(urls) {
     let promiseArr = [];
     urls.forEach(url => {
         promiseArr.push(readImageQrCode(url));
-        // https.get({...target, path: '/' + url}, (req, res) => {
-        //     if (index > 0) {
-        //         return
-        //     }
-        //     let imgData = '';
-        //     req.setEncoding('binary');
-        //     req.on('data', function (chunk) {
-        //         imgData += chunk
-        //     });
-        //     req.on('end', function () {
-        //         readImageQrCode(imgData);
-        //     });
-        // });
     });
     return Promise.all(promiseArr);
 }
