@@ -21,6 +21,15 @@ const targetList = [
             path: '',
             port: 443
         }
+    },
+    {
+        url: 'https://view.freev2ray.org/',
+        rule: '.actions a[data-lightbox]',
+        target:  {
+            hostname: 'view.freev2ray.org',
+            path: '',
+            port: 443
+        }
     }
 ];
 
