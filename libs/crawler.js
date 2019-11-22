@@ -35,8 +35,8 @@ const targetList = [
 
 function parseQrCode(image) {
     return new Promise((resolve, reject) => {
-        let qr = new QrCode();
-        qr.callback = (err, value) => {
+        const qrCode = new QrCode();
+        qrCode.callback = (err, value) => {
             if (!err) {
                 if (value && value.result) {
                     resolve(value.result);
@@ -49,7 +49,7 @@ function parseQrCode(image) {
                 resolve('false');
             }
         };
-        qr.decode(image.bitmap);
+        qrCode.decode(image.bitmap);
     });
 }
 
