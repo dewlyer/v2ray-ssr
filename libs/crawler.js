@@ -2,6 +2,7 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
+const TIME_OUT = 30000;
 
 const targetList = [
     {
@@ -18,6 +19,15 @@ const targetList = [
         rule: '.carousel a.image',
         target: {
             hostname: 'en.ss8.tech',
+            path: '',
+            port: 443
+        }
+    },
+    {
+        url: 'https://my.freeshadowsocks.org/',
+        rule: '.portfolio-item a.lightbox',
+        target: {
+            hostname: 'my.freeshadowsocks.org',
             path: '',
             port: 443
         }
@@ -82,7 +92,7 @@ function readImageQrCode(url) {
         timer = setTimeout(() => {
             console.log('read Image Qr Code Timeout');
             resolve('timeout')
-        }, 15000);
+        }, TIME_OUT);
     });
 }
 
@@ -101,8 +111,11 @@ module.exports.getData = (cb) => {
     targetList.forEach(item => {
         const promise = new Promise((resolve, reject) => {
             // console.log('page get start', item.target.hostname);
+            let timer = null;
             https.get(item.target, res => {
-                console.log('page get success', item.target.hostname);
+                clearTimeout(timer);
+                timer = null;
+                console.log('Page Get Success', item.target.hostname);
                 let html = '';
                 res.setEncoding('utf-8');
                 res.on('data', chunk => {
@@ -142,9 +155,15 @@ module.exports.getData = (cb) => {
                     });
                 })
             }).on('error', err => {
+                clearTimeout(timer);
+                timer = null;
                 console.log(err);
                 reject(err);
             });
+            timer = setTimeout(() => {
+                console.log('Page Get Timeout', item.target.hostname);
+                reject('timeout')
+            }, TIME_OUT);
         });
         promiseList.push(promise)
     });
@@ -152,6 +171,8 @@ module.exports.getData = (cb) => {
     Promise.all(promiseList).then(data => {
         console.log('All Done');
         cb(data);
+    }).catch(err => {
+        console.log(err);
     });
 
 };
