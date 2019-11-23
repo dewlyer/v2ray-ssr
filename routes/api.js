@@ -37,7 +37,7 @@ function updateSourceData(cb) {
             list = list.concat(item);
         });
         list = list.map((item, index) => {
-            console.log(item);
+            // console.log(item);
             return {
                 name: `urla10${index + 1}`,
                 url: item || ''

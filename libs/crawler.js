@@ -4,16 +4,16 @@ const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
 
 const targetList = [
-    {
-        url: 'https://get.ishadowx.biz/',
-        rule: '.hover-text a[data-lightbox-gallery]',
-        target:  {
-            hostname: 'get.ishadowx.biz',
-            path: '',
-            port: 443
-        }
-    },
-    {
+  {
+    url: 'https://view.freev2ray.org/',
+    rule: '.actions a[data-lightbox]',
+    target:  {
+      hostname: 'view.freev2ray.org',
+      path: '',
+      port: 443
+    }
+  },
+  {
         url: 'https://en.ss8.tech/',
         rule: '.carousel a.image',
         target:  {
@@ -22,11 +22,11 @@ const targetList = [
             port: 443
         }
     },
-    {
-        url: 'https://view.freev2ray.org/',
-        rule: '.actions a[data-lightbox]',
+  {
+        url: 'https://get.ishadowx.biz/',
+        rule: '.hover-text a[data-lightbox-gallery]',
         target:  {
-            hostname: 'view.freev2ray.org',
+            hostname: 'get.ishadowx.biz',
             path: '',
             port: 443
         }
@@ -34,10 +34,14 @@ const targetList = [
 ];
 
 function parseQrCode(image) {
+    // console.log('parseQrCode');
     return new Promise((resolve, reject) => {
+        // console.log('QrCode Decode');
         const qrCode = new QrCode();
         qrCode.callback = (err, value) => {
+            // console.log('QrCode Decode CallBack');
             if (!err) {
+                console.log('QrCode Decode Success');
                 if (value && value.result) {
                     resolve(value.result);
                 } else {
@@ -45,15 +49,18 @@ function parseQrCode(image) {
                     resolve('empty');
                 }
             } else {
+                console.log('QrCode Decode Failure');
                 console.error('parseQrCode:', image, err);
                 resolve('false');
             }
+            // console.log('QrCode Decode CallBack End');
         };
         qrCode.decode(image.bitmap);
     });
 }
 
 function readImageQrCode(url) {
+    // console.log('readImageQrCode');
     return Jimp.read(url).then(image => {
         return parseQrCode(image)
     }).catch(err => {
@@ -65,10 +72,12 @@ function readImageQrCode(url) {
 }
 
 function getImages(urls) {
+    // console.log('get images start');
     let promiseArr = [];
     urls.forEach(url => {
         promiseArr.push(readImageQrCode(url));
     });
+    // console.log('get images end');
     return Promise.all(promiseArr);
 }
 
@@ -76,6 +85,7 @@ module.exports.getData = (cb) => {
     let promiseList = [];
     targetList.forEach(item => {
         const promise = new Promise((resolve, reject) => {
+            // console.log('start https get url');
             https.get(item.target, res => {
                 let html = '';
                 res.setEncoding('utf-8');
@@ -101,20 +111,30 @@ module.exports.getData = (cb) => {
                     $(item.rule).each((index, image) => {
                         let src = $(image).attr('href');
                         if (src.indexOf('http') === -1) {
-                            src = item.url + src
-                            console.log(src)
+                            src = item.url + src;
                         }
-                        images.push(src);
+                        images.push(src.trim());
                     });
 
-                    resolve(getImages(images))
+                    console.log('QrCode Image List', images);
+                    getImages(images).then(result => {
+                        console.log('QrCode Result List', result);
+                        resolve(result)
+                    }).catch(err => {
+                        console.log(err);
+                        reject(err);
+                    });
                 })
-            }).on('error', err => console.log(err));
+            }).on('error', err => {
+                console.log(err);
+                reject(err);
+            });
         });
         promiseList.push(promise)
     });
 
     Promise.all(promiseList).then(data => {
+        console.log('All Done');
         cb(data);
     });
 
