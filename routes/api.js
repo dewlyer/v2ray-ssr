@@ -38,8 +38,9 @@ function updateSourceData(cb) {
         });
         list = list.map((item, index) => {
             // console.log(item);
+            const id = String(index + 1).padStart(2, '0');
             return {
-                name: `urla10${index + 1}`,
+                name: `urla10${id}`,
                 url: item || ''
             }
         });

@@ -4,28 +4,28 @@ const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
 
 const targetList = [
-  {
-    url: 'https://view.freev2ray.org/',
-    rule: '.actions a[data-lightbox]',
-    target:  {
-      hostname: 'view.freev2ray.org',
-      path: '',
-      port: 443
-    }
-  },
-  {
+    {
+        url: 'https://view.freev2ray.org/',
+        rule: '.actions a[data-lightbox]',
+        target: {
+            hostname: 'view.freev2ray.org',
+            path: '',
+            port: 443
+        }
+    },
+    {
         url: 'https://en.ss8.tech/',
         rule: '.carousel a.image',
-        target:  {
+        target: {
             hostname: 'en.ss8.tech',
             path: '',
             port: 443
         }
     },
-  {
+    {
         url: 'https://get.ishadowx.biz/',
         rule: '.hover-text a[data-lightbox-gallery]',
-        target:  {
+        target: {
             hostname: 'get.ishadowx.biz',
             path: '',
             port: 443
@@ -61,13 +61,28 @@ function parseQrCode(image) {
 
 function readImageQrCode(url) {
     // console.log('readImageQrCode');
-    return Jimp.read(url).then(image => {
-        return parseQrCode(image)
-    }).catch(err => {
-        if (err) {
-            console.error('readImageQrCode:' + err);
-            // TODO handle error
-        }
+    let timer = null;
+    return new Promise((resolve, reject) => {
+        timer = setTimeout(() => {
+            console.log('read Image Qr Code Timeout');
+            resolve('timeout')
+        }, 10000);
+
+        Jimp.read(url).then(image => {
+            clearTimeout(timer);
+            timer = null;
+            return parseQrCode(image);
+        }).then(result => {
+            resolve(result);
+        }).catch(err => {
+            if (err) {
+                clearTimeout(timer);
+                timer = null;
+                console.error('readImageQrCode:' + err);
+                // TODO handle error
+            }
+        });
+
     });
 }
 
