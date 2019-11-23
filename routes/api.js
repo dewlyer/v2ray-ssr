@@ -30,21 +30,8 @@ function updateSourceByEachItem(list, cb, index) {
     }
 }
 
-function updateSourceData(cb) {
-    Services.updateSourceData((all) => {
-        let list = [];
-        all.forEach(item => {
-            list = list.concat(item);
-        });
-        list = list.map((item, index) => {
-            // console.log(item);
-            const id = String(index + 1).padStart(2, '0');
-            return {
-                name: `urla10${id}`,
-                url: item || ''
-            }
-        });
-        list.sort((a, b) => (a.name.slice(-3) - b.name.slice(-3)));
+function updateSource(cb) {
+    Services.updateSourceData((list) => {
         Servers.clear(() => {
             updateSourceByEachItem(list, () => {
                 console.log('source sync end ==> ' + new Date().toLocaleString());
@@ -83,7 +70,7 @@ router.get('/servers/list', (req, res, next) => {
 router.get('/servers/rss', (req, res, next) => {
     getSourceRss(list => {
         res.send(base64.encode(list));
-        // updateSourceData();
+        // updateSource();
     }, err => {
         next(err)
     });
@@ -97,7 +84,7 @@ router.get('/server/:id', (req, res, next) => {
     });
 });
 router.post('/servers/sync', (req, res, next) => {
-    updateSourceData(() => res.send('OK'));
+    updateSource(() => res.send('OK'));
 });
 router.delete('/servers/:id', (req, res, next) => {
     const id = req.params.id;
@@ -112,7 +99,7 @@ router.delete('/servers/:id', (req, res, next) => {
 module.exports = router;
 
 // module.exports.polling = minutes => (req, res, next) => {
-//     global.setInterval(updateSourceData, minutes * 60000);
+//     global.setInterval(updateSource, minutes * 60000);
 //     next();
 // };
 

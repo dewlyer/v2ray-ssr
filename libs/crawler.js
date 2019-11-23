@@ -132,7 +132,6 @@ module.exports.getData = (cb) => {
                     //     const url = $item.data('clipboard-text').replace('\n', '');
                     //     result.push({name, url});
                     // });
-
                     // if (result.length) {
                     //     promiseList.push(Promise.resolve(result))
                     // }
@@ -147,8 +146,12 @@ module.exports.getData = (cb) => {
 
                     console.log('QrCode Image List', images);
                     getImages(images).then(result => {
-                        console.log('QrCode Result List', result);
-                        resolve(result)
+                        const resolveResult = {
+                            name: item.target.hostname,
+                            result
+                        };
+                        console.log('QrCode Result List', resolveResult);
+                        resolve(resolveResult);
                     }).catch(err => {
                         console.log(err);
                         reject(err);
