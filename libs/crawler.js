@@ -61,12 +61,8 @@ function parseQrCode(image) {
 
 function readImageQrCode(url) {
     // console.log('readImageQrCode');
-    let timer = null;
     return new Promise((resolve, reject) => {
-        timer = setTimeout(() => {
-            console.log('read Image Qr Code Timeout');
-            resolve('timeout')
-        }, 10000);
+        let timer = null;
 
         Jimp.read(url).then(image => {
             clearTimeout(timer);
@@ -83,6 +79,10 @@ function readImageQrCode(url) {
             }
         });
 
+        timer = setTimeout(() => {
+            console.log('read Image Qr Code Timeout');
+            resolve('timeout')
+        }, 15000);
     });
 }
 
@@ -100,8 +100,9 @@ module.exports.getData = (cb) => {
     let promiseList = [];
     targetList.forEach(item => {
         const promise = new Promise((resolve, reject) => {
-            // console.log('start https get url');
+            // console.log('page get start', item.target.hostname);
             https.get(item.target, res => {
+                console.log('page get success', item.target.hostname);
                 let html = '';
                 res.setEncoding('utf-8');
                 res.on('data', chunk => {
