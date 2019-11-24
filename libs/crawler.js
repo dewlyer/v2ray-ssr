@@ -26,7 +26,7 @@ const targetList = [
 ];
 
 // SOCKS proxy to connect to
-// process.env.socks_proxy = 'socks://127.0.0.1:1081';
+process.env.socks_proxy = 'socks://127.0.0.1:1081';
 let agent = null;
 if (process.env.socks_proxy) {
     console.log('using proxy server %j', process.env.socks_proxy);
@@ -63,7 +63,7 @@ function readImageQrCode(url) {
     // console.log('readImageQrCode');
     return new Promise((resolve, reject) => {
         let timer = null;
-        const options = !agent ? url : {path: url, agent};
+        const options = !agent ? url : {url, agent};
         Jimp.read(options).then(image => {
             clearTimeout(timer);
             timer = null;
