@@ -1,47 +1,37 @@
+const url = require('url');
 const https = require('https');
+const SocksProxyAgent = require('socks-proxy-agent');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
-const TIME_OUT = 30000;
+const TIME_OUT = 20000;
 
 const targetList = [
     {
         url: 'https://view.freev2ray.org/',
-        rule: '.actions a[data-lightbox]',
-        target: {
-            hostname: 'view.freev2ray.org',
-            path: '',
-            port: 443
-        }
-    },
-    {
-        url: 'https://en.ss8.tech/',
-        rule: '.carousel a.image',
-        target: {
-            hostname: 'en.ss8.tech',
-            path: '',
-            port: 443
-        }
+        rule: '.actions a[data-lightbox]'
     },
     {
         url: 'https://my.freeshadowsocks.org/',
-        rule: '.portfolio-item a.lightbox',
-        target: {
-            hostname: 'my.freeshadowsocks.org',
-            path: '',
-            port: 443
-        }
+        rule: '.portfolio-item a.lightbox'
+    },
+    {
+        url: 'https://en.ss8.tech/',
+        rule: '.carousel a.image'
     },
     {
         url: 'https://get.ishadowx.biz/',
         rule: '.hover-text a[data-lightbox-gallery]',
-        target: {
-            hostname: 'get.ishadowx.biz',
-            path: '',
-            port: 443
-        }
     }
 ];
+
+// SOCKS proxy to connect to
+// process.env.socks_proxy = 'socks://127.0.0.1:1081';
+let agent = null;
+if (process.env.socks_proxy) {
+    console.log('using proxy server %j', process.env.socks_proxy);
+    agent = new SocksProxyAgent(process.env.socks_proxy);
+}
 
 function parseQrCode(image) {
     // console.log('parseQrCode');
@@ -73,8 +63,8 @@ function readImageQrCode(url) {
     // console.log('readImageQrCode');
     return new Promise((resolve, reject) => {
         let timer = null;
-
-        Jimp.read(url).then(image => {
+        const options = !agent ? url : {path: url, agent};
+        Jimp.read(options).then(image => {
             clearTimeout(timer);
             timer = null;
             return parseQrCode(image);
@@ -109,13 +99,17 @@ function getImages(urls) {
 module.exports.getData = (cb) => {
     let promiseList = [];
     targetList.forEach(item => {
+        const target = url.parse(item.url);
+        if (agent) {
+            target.agent = agent;
+        }
         const promise = new Promise((resolve, reject) => {
-            // console.log('page get start', item.target.hostname);
+            // console.log('page get start', target.hostname);
             let timer = null;
-            https.get(item.target, res => {
+            https.get(target, res => {
                 clearTimeout(timer);
                 timer = null;
-                console.log('Page Get Success', item.target.hostname);
+                console.log('Page Get Success', target.hostname);
                 let html = '';
                 res.setEncoding('utf-8');
                 res.on('data', chunk => {
@@ -147,7 +141,7 @@ module.exports.getData = (cb) => {
                     console.log('QrCode Image List', images);
                     getImages(images).then(result => {
                         const resolveResult = {
-                            name: item.target.hostname,
+                            name: target.hostname,
                             result
                         };
                         console.log('QrCode Result List', resolveResult);
@@ -164,8 +158,11 @@ module.exports.getData = (cb) => {
                 reject(err);
             });
             timer = setTimeout(() => {
-                console.log('Page Get Timeout', item.target.hostname);
-                reject('timeout')
+                console.log('Page Get Timeout', target.hostname);
+                resolve({
+                    name: target.hostname,
+                    result: []
+                })
             }, TIME_OUT);
         });
         promiseList.push(promise)
