@@ -23,7 +23,7 @@ app.use('/api', api);
 // app.use(api.polling(60));
 
 app.listen(app.get('port'), () => {
-    console.log(`Express web app available at http://localhost:${app.get('port')}/ ==> ${new Date().toLocaleString()}`);
+    console.log(`Express web app available at http://127.0.0.1:${app.get('port')}/ ==> ${new Date().toLocaleString()}`);
 });
 
 module.exports = app;
