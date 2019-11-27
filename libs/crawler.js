@@ -51,7 +51,7 @@ const targetList = [
 // process.env.socks_proxy = 'socks://127.0.0.1:1081';
 let agent = null;
 if (process.env.proxy) {
-    console.log('using proxy server %j', url.format(proxyOptions));
+    console.log('Proxy: %s', url.format(proxyOptions));
     agent = new SocksProxyAgent(proxyOptions);
 }
 
