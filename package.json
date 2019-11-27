@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "proxy": "set proxy=true && node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "proxy": "set proxy=true && node app.js"
   },
   "keywords": [],
   "author": "dewlyer",
