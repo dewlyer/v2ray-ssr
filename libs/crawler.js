@@ -6,6 +6,27 @@ const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
 const TIME_OUT = 20000;
 
+let proxyOptions = {
+    protocol: 'socks:',
+    hostname: '127.0.0.1',
+    port: '1080',
+};
+
+process.argv.slice(2).forEach(argv => {
+    const [key, value] = argv.split('=');
+    switch (key) {
+        case 'protocol':
+            proxyOptions.protocol = value;
+            break;
+        case 'url':
+            proxyOptions.hostname = value;
+            break;
+        case 'port':
+            proxyOptions.port = value;
+            break;
+    }
+});
+
 const targetList = [
     {
         url: 'https://view.freev2ray.org/',
@@ -25,12 +46,13 @@ const targetList = [
     }
 ];
 
+// console.log(url.parse('socks://127.0.0.1:1081'))
 // SOCKS proxy to connect to
 // process.env.socks_proxy = 'socks://127.0.0.1:1081';
 let agent = null;
-if (process.env.socks_proxy) {
-    console.log('using proxy server %j', process.env.socks_proxy);
-    agent = new SocksProxyAgent(process.env.socks_proxy);
+if (process.env.proxy) {
+    console.log('using proxy server %j', url.format(proxyOptions));
+    agent = new SocksProxyAgent(proxyOptions);
 }
 
 function parseQrCode(image) {
