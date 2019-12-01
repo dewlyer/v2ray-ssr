@@ -1,6 +1,6 @@
 const url = require('url');
 const https = require('https');
-const SocksProxyAgent = require('socks-proxy-agent');
+const ProxyAgent = require('proxy-agent');
 const cheerio = require('cheerio');
 const Jimp = require('jimp');
 const QrCode = require('qrcode-reader');
@@ -52,7 +52,7 @@ const targetList = [
 let agent = null;
 if (process.env.proxy) {
     console.log('Proxy: %s', url.format(proxyOptions));
-    agent = new SocksProxyAgent(proxyOptions);
+    agent = new ProxyAgent(proxyOptions);
 }
 
 function parseQrCode(image) {

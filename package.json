@@ -29,9 +29,9 @@
     "jquery": "^3.4.1",
     "js-base64": "^2.5.1",
     "morgan": "^1.9.1",
+    "proxy-agent": "^3.1.1",
     "qrcode-reader": "^1.0.4",
     "request": "^2.88.0",
-    "socks-proxy-agent": "^4.0.2",
     "sqlite3": "^4.1.0"
   },
   "devDependencies": {
