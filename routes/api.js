@@ -49,14 +49,6 @@ function updateSource(cb) {
 }
 
 function getSourceRss(cb, error) {
-    Servers.all((err, servers) => {
-        if (err) {
-            return error(err);
-        }
-        const list = servers.map(item => item.url).join('\n');
-        console.log('source updated result ==> add ' + servers.length + ' servers');
-        cb(list);
-    });
 }
 
 router.get('/servers/list', (req, res, next) => {
@@ -67,14 +59,22 @@ router.get('/servers/list', (req, res, next) => {
         res.json(servers);
     });
 });
+
 router.get('/servers/rss', (req, res, next) => {
-    getSourceRss(list => {
+    Servers.all((err, servers) => {
+        if (err) {
+            next(err)
+        }
+        const list = servers.map(item => item.url).join('\n');
+        console.log('source updated result ==> add ' + servers.length + ' servers');
         res.send(base64.encode(list));
-        // updateSource();
-    }, err => {
-        next(err)
     });
 });
+
+router.post('/servers/sync', (req, res, next) => {
+    updateSource(() => res.send('OK'));
+});
+
 router.get('/server/:id', (req, res, next) => {
     Servers.find(req.params.id, (err, server) => {
         if (err) {
@@ -83,9 +83,7 @@ router.get('/server/:id', (req, res, next) => {
         res.json(server);
     });
 });
-router.post('/servers/sync', (req, res, next) => {
-    updateSource(() => res.send('OK'));
-});
+
 router.delete('/servers/:id', (req, res, next) => {
     const id = req.params.id;
     Servers.delete(id, err => {
