@@ -81,7 +81,7 @@ function parseQrCode(image) {
     });
 }
 
-function readImageQrCode(url) {
+function readImageQrCode(url, agent) {
     // console.log('readImageQrCode');
     return new Promise((resolve, reject) => {
         let timer = null;
@@ -108,21 +108,21 @@ function readImageQrCode(url) {
     });
 }
 
-function getImages(urls) {
+function getImages(urls, agent) {
     // console.log('get images start');
     let promiseArr = [];
     urls.forEach(url => {
-        promiseArr.push(readImageQrCode(url));
+        promiseArr.push(readImageQrCode(url, agent));
     });
     // console.log('get images end');
     return Promise.all(promiseArr);
 }
 
-module.exports.getData = (cb) => {
+module.exports.getData = (cb, proxy) => {
     let promiseList = [];
     targetList.forEach(item => {
         const target = url.parse(item.url);
-        if (agent) {
+        if (proxy && agent) {
             target.agent = agent;
         }
         const promise = new Promise((resolve, reject) => {
@@ -161,7 +161,7 @@ module.exports.getData = (cb) => {
                     });
 
                     console.log('QrCode Image List', images);
-                    getImages(images).then(result => {
+                    getImages(images, target.agent).then(result => {
                         const resolveResult = {
                             name: target.hostname,
                             result

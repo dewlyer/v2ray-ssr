@@ -5,8 +5,11 @@
         <h5 class="card-header">
             <%= title %>
             <div class="float-right">
-                <button type="submit" class="btn btn-sm btn-primary" id="syncStartBtn" data-src="/api/servers/sync">
-                    同步
+                <button type="button" class="btn btn-sm btn-success" id="syncStartBtn" data-src="/api/servers/sync">
+                    直接同步
+                </button>
+                <button type="button" class="btn btn-sm btn-primary" id="syncProxyBtn" data-src="/api/servers/proxy">
+                    代理同步
                 </button>
             </div>
         </h5>
@@ -88,6 +91,14 @@
       })
 
       $('#syncStartBtn').on('click', event => {
+          const $target = $(event.target);
+          const src = $target.data('src');
+          $('.server-list').add('.server-rss').empty();
+          getReady(src);
+          return false;
+      });
+
+      $('#syncProxyBtn').on('click', event => {
           const $target = $(event.target);
           const src = $target.data('src');
           $('.server-list').add('.server-rss').empty();

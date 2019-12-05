@@ -4,8 +4,7 @@
   "dscription": "v2ray ssr",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "proxy": "set proxy=true && node app.js"
+    "start": "set proxy=true && node app.js"
   },
   "keywords": [],
   "author": "dewlyer",

@@ -6,7 +6,7 @@ const logger = require('morgan');
 const router = require('./routes');
 const api = require('./routes/api');
 const app = express();
-const port = process.env.PROT || 3000;
+const port = process.env.port || 3000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
