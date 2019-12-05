@@ -160,13 +160,13 @@ module.exports.getData = (cb, proxy) => {
                         images.push(src.trim());
                     });
 
-                    console.log('QrCode Image List', images);
+                    console.log('QrCode Image List \n', images);
                     getImages(images, target.agent).then(result => {
                         const resolveResult = {
                             name: target.hostname,
                             result
                         };
-                        console.log('QrCode Result List', resolveResult);
+                        console.log('QrCode Result List \n', resolveResult);
                         resolve(resolveResult);
                     }).catch(err => {
                         console.log(err);
