@@ -36,12 +36,12 @@ const targetList = [
         url: 'https://my.freeshadowsocks.org/',
         rule: '.portfolio-item a.lightbox'
     },
+    // {
+    //     url: 'https://en.ss8.tech/',
+    //     rule: '.carousel a.image'
+    // },
     {
-        url: 'https://en.ss8.tech/',
-        rule: '.carousel a.image'
-    },
-    {
-        url: 'https://get.ishadowx.biz/',
+        url: 'https://my.ishadowx.biz/',
         rule: '.hover-text a[data-lightbox-gallery]',
     }
 ];
