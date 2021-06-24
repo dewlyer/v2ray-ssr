@@ -9,7 +9,7 @@ const TIME_OUT = 20000;
 let proxyOptions = {
     protocol: 'socks:',
     hostname: '127.0.0.1',
-    port: '1080',
+    port: '1086',
 };
 
 process.argv.slice(2).forEach(argv => {
@@ -33,13 +33,14 @@ const targetList = [
         rule: '.actions a[data-lightbox]'
     },
     {
-        url: 'https://my.freeshadowsocks.org/',
+        url: 'https://get.freeshadowsocks.org/',
         rule: '.portfolio-item a.lightbox'
     },
-    // {
-    //     url: 'https://en.ss8.tech/',
-    //     rule: '.carousel a.image'
-    // },
+    {
+        url: 'https://io.freess.info/',
+        rule: '.4u a.image',
+        dataImage: true
+    },
     {
         url: 'https://my.ishadowx.biz/',
         rule: '.hover-text a[data-lightbox-gallery]',
@@ -85,7 +86,10 @@ function readImageQrCode(url, agent) {
     // console.log('readImageQrCode');
     return new Promise((resolve, reject) => {
         let timer = null;
-        const options = !agent ? url : {url, agent};
+        if(url.indexOf('base64') !== -1) {
+            url = Buffer.from(url.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+        }
+        let options = !agent ? url : {url, agent};
         Jimp.read(options).then(image => {
             clearTimeout(timer);
             timer = null;
@@ -154,7 +158,7 @@ module.exports.getData = (cb, proxy) => {
 
                     $(item.rule).each((index, image) => {
                         let src = $(image).attr('href');
-                        if (src.indexOf('http') === -1) {
+                        if (!item.dataImage && src.indexOf('http') === -1) {
                             src = item.url + src;
                         }
                         images.push(src.trim());
