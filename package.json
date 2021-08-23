@@ -1,10 +1,10 @@
 {
   "name": "v2ray-ssr",
   "version": "1.0.0",
-  "dscription": "v2ray ssr",
+  "dscription": "v2ray & ssr",
   "main": "index.js",
   "scripts": {
-    "start": "set proxy=true && node app.js"
+    "start": "cross-env proxy=true && node app.js"
   },
   "keywords": [],
   "author": "dewlyer",
@@ -34,6 +34,7 @@
     "sqlite3": "^4.1.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.1"
+    "@types/express": "^4.17.1",
+    "cross-env": "^7.0.3"
   }
 }
