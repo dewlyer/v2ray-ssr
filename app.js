@@ -23,7 +23,7 @@ app.use('/api', api);
 // app.use(api.polling(60));
 
 app.listen(app.get('port'), () => {
-    console.log(`Server: http://127.0.0.1:${app.get('port')}`);
+  console.log(`Server: http://127.0.0.1:${app.get('port')}`);
 });
 
 module.exports = app;
