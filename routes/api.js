@@ -2,19 +2,11 @@ const router = require('express').Router();
 const Controller = require('../controllers');
 
 router.get('/servers/list', (req, res, next) => {
-  Controller.getServerList((err, servers) => {
-    res.json(servers);
-  }, (err) => {
-    return next(err);
-  });
+  Controller.getServerList((servers) => res.json(servers), (err) => next(err));
 });
 
 router.get('/servers/rss', (req, res, next) => {
-  Controller.getServerRss((result) => {
-    res.send(result);
-  }, (err) => {
-    next(err);
-  });
+  Controller.getServerRss((result) => res.send(result), (err) => next(err));
 });
 
 router.post('/servers/sync', (req, res, next) => {
@@ -26,23 +18,11 @@ router.post('/servers/proxy', (req, res, next) => {
 });
 
 router.get('/server/:id', (req, res, next) => {
-  const id = req.params.id;
-  Controller.findServer(id, (err, server) => {
-    if (err) {
-      return next(err);
-    }
-    res.json(server);
-  });
+  Controller.findServer(req.params.id, (err, server) => err ? next(err) : res.json(server));
 });
 
 router.delete('/servers/:id', (req, res, next) => {
-  const id = req.params.id;
-  Controller.deleteServer(id, err => {
-    if (err) {
-      return next(err);
-    }
-    res.send({message: 'Deleted'});
-  });
+  Controller.deleteServer(req.params.id, err => err ? next(err) : res.send({message: 'Deleted'}));
 });
 
 module.exports = router;

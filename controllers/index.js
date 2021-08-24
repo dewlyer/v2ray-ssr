@@ -85,6 +85,7 @@ function getServerRss(successCallback, failCallback) {
 }
 
 module.exports = {
+  updateSource,
   findServer,
   deleteServer,
   getServerList,

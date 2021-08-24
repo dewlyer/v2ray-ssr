@@ -5,7 +5,7 @@
       const html = $.map(data, server => `<li><span>${server.name}</span>: <br><a href="${server.url}" title="${server.name}"> ${server.url} </a></li>`).join('');
       $('.server-list').html(html);
     }).catch(err => {
-      window.alert(err);
+      window.alert(JSON.stringify(err));
     });
   }
 
@@ -13,7 +13,7 @@
     $.get('/api/servers/rss').then(data => {
       $('.server-rss').html(data);
     }).catch(err => {
-      window.alert(err);
+      window.alert(JSON.stringify(err));
     });
   }
 
@@ -22,7 +22,7 @@
       getServerList();
       getServerRss();
     }).catch(err => {
-      window.alert(err);
+      window.alert(JSON.stringify(err));
     });
   }
 
