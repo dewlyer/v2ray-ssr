@@ -64,7 +64,7 @@ function parseQrCode(image) {
     qrCode.callback = (err, value) => {
       // console.log('QrCode Decode CallBack');
       if (!err) {
-        console.log('QrCode Decode Success');
+        // console.log('QrCode Decode Success');
         if (value && value.result) {
           resolve(value.result);
         } else {
@@ -86,11 +86,13 @@ function readImageQrCode(url, agent) {
   // console.log('readImageQrCode');
   return new Promise((resolve, reject) => {
     let timer = null;
+    let JimpReadInstance = null;
     if (url.indexOf('base64') !== -1) {
-      url = Buffer.from(url.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+      JimpReadInstance = Jimp.read(Buffer.from(url.replace(/^data:image\/\w+;base64,/, ""), 'base64'));
+    } else {
+      JimpReadInstance = Jimp.read({agent, url});
     }
-    let options = !agent ? url : {url, agent};
-    Jimp.read(options).then(image => {
+    JimpReadInstance.then(image => {
       clearTimeout(timer);
       timer = null;
       return parseQrCode(image);
@@ -102,6 +104,7 @@ function readImageQrCode(url, agent) {
         timer = null;
         console.error('readImageQrCode:' + err);
         // TODO handle error
+        reject(err);
       }
     });
 
@@ -164,13 +167,13 @@ module.exports.getData = (cb, proxy) => {
             images.push(src.trim());
           });
 
-          console.log('QrCode Image List \n', images);
+          // console.log('QrCode Image List \n', images);
           getImages(images, target.agent).then(result => {
             const resolveResult = {
               name: target.hostname,
               result
             };
-            console.log('QrCode Result List \n', resolveResult);
+            // console.log('QrCode Result List \n', resolveResult);
             resolve(resolveResult);
           }).catch(err => {
             console.log(err);
@@ -195,12 +198,11 @@ module.exports.getData = (cb, proxy) => {
   });
 
   Promise.allSettled(promiseList).then(data => {
-    console.log('All Done');
     cb(data);
   }).catch(err => {
     console.log(err);
   }).finally(() => {
-    console.log('finally')
+    console.log('All Done');
   });
 
 };

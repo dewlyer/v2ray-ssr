@@ -2,7 +2,11 @@ const crawler = require('../libs/crawler');
 
 function updateSourceCallback(all, cb) {
   let list = [];
-  all.forEach(({name, result}) => {
+  all.forEach(({value}) => {
+    if (!value) {
+      return;
+    }
+    const {name, result} = value;
     list = list.concat(result.map((item, index) => {
       const id = String(index + 1).padStart(3, '0');
       return {
