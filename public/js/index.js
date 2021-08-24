@@ -1,4 +1,4 @@
-(function () {
+(function ($) {
 
   function getServerList() {
     $.get('/api/servers/list').then(data => {
@@ -29,10 +29,6 @@
   $(document).ready(() => {
 
     $(window).on('load', () => {
-      // const src = $('#syncStartBtn').data('src');
-      // setTimeout(() => {
-      //     getReady(src);
-      // }, 1000)
       getServerList();
       getServerRss();
     })
@@ -55,6 +51,5 @@
 
   });
 
-
-}());
+}(jQuery));
 

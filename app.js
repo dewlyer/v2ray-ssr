@@ -22,8 +22,9 @@ app.use('/', router);
 app.use('/api', api);
 // app.use(api.polling(60));
 
-app.listen(app.get('port'), () => {
-  console.log(`Server: http://127.0.0.1:${app.get('port')}`);
+const listenPort = app.get('port');
+app.listen(listenPort, () => {
+  console.log(`Server: http://127.0.0.1:${listenPort}`);
 });
 
 module.exports = app;
