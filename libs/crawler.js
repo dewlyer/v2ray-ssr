@@ -194,11 +194,13 @@ module.exports.getData = (cb, proxy) => {
     promiseList.push(promise)
   });
 
-  Promise.all(promiseList).then(data => {
+  Promise.allSettled(promiseList).then(data => {
     console.log('All Done');
     cb(data);
   }).catch(err => {
     console.log(err);
+  }).finally(() => {
+    console.log('finally')
   });
 
 };

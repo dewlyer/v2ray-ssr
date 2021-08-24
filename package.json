@@ -4,7 +4,7 @@
   "dscription": "v2ray & ssr",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env proxy=true && node app.js"
+    "start": "cross-env proxy=true node app.js"
   },
   "keywords": [],
   "author": "dewlyer",
