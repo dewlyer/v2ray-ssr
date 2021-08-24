@@ -3,8 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
-const router = require('./routes');
-const api = require('./routes/api');
+const mainRouter = require('./routes');
+const apiRouter = require('./routes/api');
 const app = express();
 const port = process.env.port || 3000;
 
@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/libs/jquery', express.static('node_modules/jquery/dist'));
 app.use('/libs/bootstrap', express.static('node_modules/bootstrap/dist'));
-app.use('/', router);
-app.use('/api', api);
+app.use('/', mainRouter);
+app.use('/api', apiRouter);
 // app.use(api.polling(60));
 
 const listenPort = app.get('port');
